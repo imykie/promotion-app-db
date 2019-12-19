@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 
 
 var accessorSchema = new Schema({
-    name:{type:String},
+    
+    accessorname:{type:String},
+    accessoremail:{type:String},
     university: {type:String},
     email:{type: String},
     status: {
@@ -16,10 +18,10 @@ var candidateSchema = new Schema({
     surname:{type: String},
     other:{type: String},
     email :{type: String},
-    faculty: {type: String},
-    department:{type: String},
-    level: {type: String},
-    date: {type: date},
+    fac: {type: String},
+    dep:{type: String},
+    lev: {type: String},
+    date: {type: String},
     accessor: [accessorSchema]
 },{
         collection: 'candidates'
