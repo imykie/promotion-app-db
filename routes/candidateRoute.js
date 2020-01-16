@@ -1,10 +1,9 @@
 var express = require('express');
-var app = express();
+// var app = express();
 
 var Candidate = require('../models/candidate');
-
-
 var route = express.Router();
+let sendMail = require('./invitationMail');
 
 route.get('/candidates-list', (req, res, next)=> {
     Candidate.find((error, data)=> {
@@ -18,6 +17,7 @@ route.get('/candidates-list', (req, res, next)=> {
 })
 
 route.post('/add-candidate', (req, res, next)=> {
+    console.log(req.body);
     Candidate.create(req.body, (error, data) => {
         if(error){
             return next(error)
@@ -71,4 +71,5 @@ route.delete('/delete-candidate/:id', (req,res, next)=> {
         }
     })
 })
+
 module.exports = route;

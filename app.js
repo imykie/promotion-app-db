@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var usersRouter = require('./routes/users');
 var candidateRouter = require('./routes/candidateRoute');
+let mailRouter = require('./routes/invitationMail');
 var app = express();
 let port = process.env.PORT || 3000
 
@@ -38,6 +39,7 @@ app.use(cookieParser());
 
 app.use('/users', usersRouter);
 app.use('/api', candidateRouter);
+app.use('/mail', mailRouter);
 
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
