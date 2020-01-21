@@ -1,35 +1,38 @@
-// var createError = require('http-errors');
-var express = require('express');
-// var path = require('path');
-var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var usersRouter = require('./routes/users');
-var candidateRouter = require('./routes/candidateRoute');
-let mailRouter = require('./routes/invitationMail');
-var app = express();
+// const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+// const logger = require('morgan');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const usersRouter = require('./routes/users');
+const candidateRouter = require('./routes/candidateRoute');
+// let mailRouter = require('./routes/invitationMail');
+const app = express();
 let port = process.env.PORT || 3000
 
 
 
 
-var url = 'mongodb://localhost:27017/PC'
+const url = 'mongodb://localhost:27017/PC'
 mongoose.connect(url, {useNewUrlParser: true})
 .then(() => {
   console.log('connected to server')
 },
-error=>{
-  console.log('error connected to server')
+error => {
+  console.log('error while connecting to server')
 })
 
-var corsOptions = {
+let corsOptions = {
   origin: 'http://localhost:4200',
   optionsSuccessStatus: 200
 }
 
+// express.static(path.join(__dirname, '/public'))
+// app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'ejs');
+
 app.use(cors(corsOptions));
 // app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -39,7 +42,7 @@ app.use(cookieParser());
 
 app.use('/users', usersRouter);
 app.use('/api', candidateRouter);
-app.use('/mail', mailRouter);
+// app.use('/mail', mailRouter);
 
 // catch 404 and forward to error handler
 // app.use(function(req, res, next) {

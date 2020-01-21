@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Promo Tracking</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            h3{
+                color: #000;
+            }
+            ul{
+                list-style-type: none;
+            }
+            .mt{
+                margin-top: 20px;
+            }
+            .mt-li{
+                margin-top: 10px;
+            }
+            .mt-1{
+                margin-top: 2px;
+            }
+            .acc-name{
+                font-weight: bold;
+            }
+        </style>
+      </head>
+      <body>
+        <div>
+            <h3><%= user.surname %> <%= user.other %> of <%- user.dep %>, <%= user.fac %></h3>
+            <h3 class="mt-1">Level : <%= user.lev %></h3>
+            <div class="mt">
+                <ul>
+                <% for(let i in user.accessor){ %>
+                   <li class="mt-li">To verify invitation status of <span class="acc-name"><%= user.accessor[i].accessorname %></span> : http://localhost:3000/api/verify-invite/<%= user._id %>?accessorId=<%= user.accessor[i]._id %> </li>
+                    <% } %>
+                </ul>
+                    
+            </div>
+        </div>
+      </body>
+</html>
