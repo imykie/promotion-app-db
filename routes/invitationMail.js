@@ -8,38 +8,16 @@ const path = require('path');
 
 // router.post('/invite', (req, res) => {
 
-function invitationMail(user){
+function invitationMail(user, type){
 
     let response;
-
+    const filePath = (type == "invitation")? "../public/ejs/mailContent.ejs" :"../public/ejs/paperVerification.ejs";
     const lecturerId = user._id
     const lecturerName = user.surname +' '+user.other;
-    // const faculty = user.fac;
-    // const department = user.dep;
-    // const level = user.lev;
-    // const accessor = user.accessor;
+    const mailTitle = (type == "invitation")? "Invitation of " +lecturerName+ " sent": "Verification of papers of " +lecturerName;
+
     console.log(lecturerName, user._id);
     const senderMail = 'michaelolatunji2020@gmail.com';
-
-    // const html = (
-    //     <div>
-    //         <h5>{`${lecturerName} of ${department}, ${faculty}`}</h5>
-    //         <h5>Level : {`${level}`}</h5>
-    //         <div>
-    //             {
-    //                 accessor.map((item, index) =>{
-    //                     return (
-    //                         <div>
-    //                             <span>{`${index+1}: to accept invitation of ${item.accessorname}`}</span>
-    //                             <p>{`http://localhost:3000/api/verifyInvite/${lecturerId}?accessorId=${item.id}`}</p>
-    //                             <br />
-    //                         </div>
-    //                     )
-    //                 })
-    //             }
-    //         </div>
-    //     </div>
-    // );
 
     let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -57,7 +35,7 @@ function invitationMail(user){
 
     })
     // const templateString = fs.readFileSync(path.join(__dirname, "../views/mailContent.ejs"), 'utf-8');
-    ejs.renderFile(path.join(__dirname, "../public/ejs/mailContent.ejs"), {user:user}, (err, data) => {
+    ejs.renderFile(path.join(__dirname, filePath), {user:user}, (err, data) => {
         if(err){
             console.log(err);
             // res.status(401).send(err);
@@ -65,25 +43,24 @@ function invitationMail(user){
             user.accessor.map((item) => { return console.log(item.accessorname) })
             let mailOptions = {
                 from: `Promotion Tracker <${senderMail}>`,
-                to: 'tundexmike@gmail.com',
-                subject: "Invitation of "+lecturerName+" sent",
+                to: 'tupskey@gmail.com',
+                subject: mailTitle,
                 // text: `http://localhost:3000/api/verify-invite/${lecturerId}?accessorId=${user.accessor[0]._id}`
                 // html: ejs.render(templateString)
                 html: data
             }
             console.log("html data: "+mailOptions.html)
-            // transporter.sendMail(mailOptions, function(err, res) {
-            //     if (err) {
-            //         console.log(err);
-            //         res.status(401).send(err);
-            //     }else {
-            //             console.log(res, res.response);
-            //             res.status(200).send(res);
-            //             response = res
-            //         }
-            //     transporter.close();
-            //     return res.json(response);
-            // });
+            transporter.sendMail(mailOptions, function(err, res) {
+                if (err) {
+                    console.log(err);
+                    res.status(401).send(err);
+                }else {
+                        console.log(res, res.response, res.messageId);
+                        // res.status(200);
+                    }
+                transporter.close();
+                // return res.json(response);
+            });
         }
     })
     

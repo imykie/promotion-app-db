@@ -10,7 +10,11 @@ var accessorSchema = new Schema({
     email:{type: String},
     status: {
         type: String,
-        enum: ['invitation sent', 'invitation received','paper sent','paper recieved']
+        enum: ['invitation sent', 'invitation received','paper sent','paper received']
+    },
+    approved: {
+        type: Boolean,
+        default: false
     }
 })
 
