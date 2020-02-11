@@ -48,7 +48,7 @@ route.post('/add-candidate', (req, res, next)=> {
             if(token){
                 console.log("token: "+token);
                 res.cookie('token', token, {httpOnly: true, secure:false ,maxAge: jwtExpirySeconds * 1000})
-                // sendMail(data, type); //sends invitation verification mail
+                sendMail(data, type); //sends invitation verification mail
                 res.status(200);
             }else{
                 res.status(401).end();
@@ -250,7 +250,7 @@ route.put("/send-papers/:id", (req, res, next) => {
                     next(err);
                     res.status(400).end();
                 }else{
-                    // sendMail(data, type); //sends mail to verify if paper accepted
+                    sendMail(data, type); //sends mail to verify if paper accepted
                     //send papers notifications
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
