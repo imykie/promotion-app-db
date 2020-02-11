@@ -25,7 +25,7 @@ var candidateSchema = new Schema({
     fac: {type: String},
     dep:{type: String},
     lev: {type: String},
-    date: {type: String},
+    date: {type: Date, default: Date.now},
     accessor: [accessorSchema]
 },{
         collection: 'candidates'

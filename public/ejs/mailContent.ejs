@@ -32,7 +32,7 @@
             <div class="mt">
                 <ul>
                 <% for(let i in user.accessor){ %>
-                   <li class="mt-li">To verify invitation status of <span class="acc-name"><%= user.accessor[i].accessorname %></span> : http://localhost:3000/api/verify-invite/<%= user._id %>?accessorId=<%= user.accessor[i]._id %> </li>
+                   <li class="mt-li">To verify invitation status of <span class="acc-name"><%= user.accessor[i].accessorname %></span> : http://localhost:4200/verify-invite/<%= user._id %>?accessorId=<%= user.accessor[i]._id %> </li>
                     <% } %>
                 </ul>
                     
