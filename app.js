@@ -12,11 +12,14 @@ const candidateRouter = require('./routes/candidateRoute');
 // let mailRouter = require('./routes/invitationMail');
 const app = express();
 let port = process.env.PORT || 3000
+var passport = require('passport');
+var authenticate = require('./authenticate')
+var config = require('./config');
 
 
 
 
-const url = 'mongodb://localhost:27017/PC'
+const url = config.mongoUrl;
 mongoose.connect(url, {useNewUrlParser: true})
 .then(() => {
   console.log('connected to server')
@@ -44,6 +47,8 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 
 app.use('/users', usersRouter);
