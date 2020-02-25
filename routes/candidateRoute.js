@@ -28,7 +28,21 @@ route.get('/candidates-list', (req, res, next)=> {
             return res.json(data);
         }
     })
-})
+});
+
+route.get('/candidates-dash', (req, res, next)=> {
+    Candidate.aggregate([
+        {$sort: {"date": -1}},
+        {$limit: 4}], (err, data) => {
+            if(err){
+                next(err);
+                res.status(400).end();
+            }else{
+                res.status(200);
+                res.json(data);
+            }
+        })
+});
 
 //On add candidate, accessor status sets to paper sent by default, email gets sent to confirm if paper has been sent to the admin 
 route.post('/add-candidate', (req, res, next)=> {
@@ -112,6 +126,20 @@ route.get('/notifications', (req, res, next) => {
         next(err);
         res.status(401).end()
     })
+});
+
+route.get('/notifications-dash', (req, res, next)=> {
+    Notification.aggregate([
+        {$sort: {"date": -1}},
+        {$limit: 6}], (err, data) => {
+            if(err){
+                next(err);
+                res.status(400).end();
+            }else{
+                res.status(200);
+                res.json(data);
+            }
+        })
 });
 
 route.put('/update/:id', (req,res,next)=> {
