@@ -10,7 +10,6 @@ var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var LocalStrategy = require('passport-local').Strategy;
 var jwt = require('jsonwebtoken');
-// var User = require('./models/user');
 var config = require('./config');
 
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
