@@ -2,7 +2,7 @@ const express = require('express');
 // const app = express();
 
 const Candidate = require('../models/candidate');
-const Accessor = require('../models/accessor')
+// const Accessor = require('../models/accessor');
 const Notification = require('../models/notification');
 const route = express.Router();
 const sendMail = require('./invitationMail');
@@ -20,12 +20,15 @@ const pusher = new Pusher({
   });
 
 route.get('/candidates-list', (req, res, next)=> {
-    Candidate.find((error, data)=> {
-        if(error){
-            return next(error);
-        }
-        else{
-            return res.json(data);
+    Candidate.aggregate([
+        {$sort: {"date": -1}}
+        ], (err, data) => {
+            if(err){
+                next(err);
+                res.status(400).end();
+            }else{
+                res.status(200);
+                res.json(data);
         }
     })
 });
@@ -62,7 +65,7 @@ route.post('/add-candidate', (req, res, next)=> {
             if(token){
                 console.log("token: "+token);
                 res.cookie('token', token, {httpOnly: true, secure:false ,maxAge: jwtExpirySeconds * 1000})
-                sendMail(data, type); //sends invitation verification mail
+                // sendMail(data, type); //sends invitation verification mail
                 res.status(200);
             }else{
                 res.status(401).end();
@@ -147,7 +150,7 @@ route.put('/update/:id', (req,res,next)=> {
       $set: {
           accessor: req.body.accessor
       }  
-    },
+    },{ new: true},
     (error, data)=> {
         if(error){
             console.log(error);
@@ -278,7 +281,7 @@ route.put("/send-papers/:id", (req, res, next) => {
                     next(err);
                     res.status(400).end();
                 }else{
-                    sendMail(data, type); //sends mail to verify if paper accepted
+                    // sendMail(data, type); //sends mail to verify if paper accepted
                     //send papers notifications
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
