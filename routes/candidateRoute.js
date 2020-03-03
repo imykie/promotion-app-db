@@ -1,15 +1,14 @@
 const express = require('express');
-// const app = express();
-
 const Candidate = require('../models/candidate');
 // const Accessor = require('../models/accessor');
 const Notification = require('../models/notification');
 const route = express.Router();
-const sendMail = require('./invitationMail');
+// const sendMail = require('./invitationMail');
 const jwt = require('jsonwebtoken');
 const jwtPrivateKey = "promotion tracking";
 const jwtExpirySeconds = 600;
 const Pusher = require('pusher');
+const notificationMail = require('./notificationMail');
 
 const pusher = new Pusher({
     appId: '935842',
@@ -73,6 +72,7 @@ route.post('/add-candidate', (req, res, next)=> {
 
             //add candidate notification
             const message = `${surname} ${other} of ${dep} account created with ${accessor.length} of 3 accessors`
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err){
                     res.status(400).end();
@@ -160,6 +160,7 @@ route.put('/update/:id', (req,res,next)=> {
             //update notification
             const { surname, other, dep } = data;
             const message = `${surname} ${other}, ${dep} details updated!`
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err) return next(err);
                 else{
@@ -189,6 +190,7 @@ route.delete('/delete-candidate/:id', (req,res, next)=> {
             //delete candidate notification
             const { surname, other } = data;
             const message = `${surname} ${other} has been deleted`
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err) return next(err);
                 else{
@@ -223,7 +225,7 @@ route.put("/verify-invite/:id", (req, res, next) => {
                     const { surname, other, dep, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
                     const message = `${accessorName} of ${surname} ${other}, ${dep} has responded. Invitation accepted`;
-        
+                    // notificationMail({data:data, message: message});
                     Notification.create({ownerId: data._id, message: message}, (err, data) => {
                         if (err) return next(err);
                         else{
@@ -250,7 +252,7 @@ route.put("/verify-invite/:id", (req, res, next) => {
                         }
                     })});
         
-                    res.json({status: result.status, message:message, hasNotResponded: hasNotRespondedList});
+                    res.json({data: data, status: result.status, message:message, hasNotResponded: hasNotRespondedList});
                     console.log(data.accessor +" has accepted the invitation");
                     res.status(200).end();
                 // }
@@ -286,6 +288,8 @@ route.put("/send-papers/:id", (req, res, next) => {
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
                     const message = `Papers has been sent to ${accessorName} of ${surname} ${other}`;
+
+                    // notificationMail({data:data, message: message});
                     Notification.create({ownerId: data._id, message: message}, (err, data) => {
                         if (err){
                             res.status(400).end();
@@ -298,7 +302,7 @@ route.put("/send-papers/:id", (req, res, next) => {
                         }
                     });
                     res.status(200);
-                    res.json(data);
+                    res.json({data: data, status: result.status, message:message});
                     console.log(req.query.accessorId +" paper has been sent");
                 }
             })
@@ -331,6 +335,7 @@ route.put("/verify-papers/:id", (req, res ,next) => {
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
                     const message = `Papers has been received by ${accessorName} of ${surname} ${other}`;
+                    // notificationMail({data:data, message: message});
                             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                                 if (err){
                                     res.status(400).end();
@@ -378,6 +383,8 @@ route.put("/final-status/:id", (req, res) => {
                     const status = accessor.find(x => x._id == req.query.accessorId).approved;
                     let finalStatus = (status)? "approved":"disproved";
                     const message = `${surname} ${other} papers has been ${finalStatus} by ${accessorName}`;
+                    // notificationMail({data:data, message: message});
+
                             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                                 if (err){
                                     res.status(400).end();

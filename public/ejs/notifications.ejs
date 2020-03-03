@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Promo Tracking | </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            h3{
+                color: #000;
+            }
+            ul{
+                list-style-type: none;
+            }
+            .mt{
+                margin-top: 20px;
+            }
+            .mt-li{
+                margin-top: 10px;
+            }
+            .mt-1{
+                margin-top: 2px;
+            }
+            .acc-name{
+                font-weight: bold;
+            }
+        </style>
+      </head>
+      <body>
+        <div>
+            <h3><%= user.surname %> <%= user.other %> </h3>
+            <p>Faculty: <%- user.fac %></p>
+            <p>Department: <%= user.dep %></p>
+            <p class="mt-1">Level : <%= user.lev %></p>
+            <div class="mt">
+                <h3 class="">Message: <%= message %></h3> 
+                Date: <span> <%= new Date().toDateString() %></span>                   
+            </div>
+        </div>
+      </body>
+</html>
