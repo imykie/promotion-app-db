@@ -9,12 +9,13 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const usersRouter = require('./routes/users');
 const candidateRouter = require('./routes/candidateRoute');
+const reminder = require('./routes/scheduleReminder');
 // let mailRouter = require('./routes/invitationMail');
 const app = express();
 let port = process.env.PORT || 3000
-var passport = require('passport');
-var authenticate = require('./authenticate')
-var config = require('./config');
+const passport = require('passport');
+const authenticate = require('./authenticate')
+const config = require('./config');
 
 
 
@@ -53,6 +54,7 @@ app.use(passport.initialize());
 
 app.use('/users', usersRouter);
 app.use('/api', candidateRouter);
+reminder();
 // app.use('/mail', mailRouter);
 
 // catch 404 and forward to error handler

@@ -212,7 +212,8 @@ route.put("/verify-invite/:id", (req, res, next) => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
                 $set: {
-                    "accessor.$.status": newStatus
+                    "accessor.$.status": newStatus,
+                    "accessor.$.date":  new Date().toISOString()
                 }
             }, {new: true}).then((data) => {
                 // if(err) {
@@ -276,7 +277,10 @@ route.put("/send-papers/:id", (req, res, next) => {
     invitationAccepted(req, res).then(result => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id": req.params.id, "accessor._id": req.query.accessorId}, 
-            {$set: {"accessor.$.status": newStatus}},{new:true},
+            {$set: {
+                "accessor.$.status": newStatus,
+                "accessor.$.date":  new Date().toISOString()
+            }},{new:true},
             (err, data) => {
                 if(err) {
                     console.log(err, "sending papers failed");
@@ -322,7 +326,9 @@ route.put("/verify-papers/:id", (req, res ,next) => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
                 $set: {
-                    "accessor.$.status": newStatus
+                    "accessor.$.status": newStatus,
+                    "accessor.$.date":  new Date().toISOString()
+
                 }
             },{new:true}, (err, data) => {
                 if(err) {
@@ -369,7 +375,10 @@ route.put("/final-status/:id", (req, res) => {
     paperReceived(req, res).then((result) => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
-                $set: {"accessor.$.approved": req.query.status}
+                $set: {
+                    "accessor.$.approved": req.query.status,
+                    "accessor.$.date":  new Date().toISOString()
+            }
             },{new:true}, (err, data) => {
                 if(err){
                     console.log(err);
