@@ -9,7 +9,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const usersRouter = require('./routes/users');
 const candidateRouter = require('./routes/candidateRoute');
-const reminder = require('./routes/scheduleReminder');
+const invitationReminder = require('./routes/invitationRemainder');
+const papersReminder = require('./routes/papersRemainder');
 // let mailRouter = require('./routes/invitationMail');
 const app = express();
 let port = process.env.PORT || 3000
@@ -54,7 +55,8 @@ app.use(passport.initialize());
 
 app.use('/users', usersRouter);
 app.use('/api', candidateRouter);
-reminder();
+invitationReminder();
+papersReminder();
 // app.use('/mail', mailRouter);
 
 // catch 404 and forward to error handler

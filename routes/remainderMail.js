@@ -4,15 +4,12 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 
-function invitationMail(user){
+function remainderMail(user, message){
 
-    let response;
     const filePath =  "../public/ejs/notifications.ejs";
-    const lecturerId = user.data._id
-    const lecturerName = user.data.surname +' '+user.data.other;
-    const mailTitle = `Notification on ${lecturerName} of ${user.data.fac}, department of ${user.data.dep}`;
+    const lecturerName = user.surname +' '+user.other;
+    const mailTitle = `Notification on ${lecturerName} of ${user.fac}, department of ${user.dep}`;
 
-    console.log(lecturerName, user.data._id);
     const senderMail = 'michaelolatunji2020@gmail.com';
 
     let transporter = nodemailer.createTransport({
@@ -30,12 +27,12 @@ function invitationMail(user){
         }
 
     })
-    ejs.renderFile(path.join(__dirname, filePath), {user:user.data, message: user.message}, (err, data) => {
+    ejs.renderFile(path.join(__dirname, filePath), {user:user, message: message}, (err, data) => {
         if(err){
             console.log(err);
             // res.status(401).send(err);
         }else{
-            // user.data.accessor.map((item) => { return console.log(item.accessorname) })
+            // user.accessor.map((item) => { return console.log(item.accessorname) })
             let mailOptions = {
                 from: `Promotion Tracker <${senderMail}>`,
                 to: ['tundexmike@gmail.com', 'tupskey@gmail.com'],
@@ -46,7 +43,8 @@ function invitationMail(user){
             transporter.sendMail(mailOptions, function(err, res) {
                 if (err) {
                     console.log(err);
-                    res.status(401).send(err);
+                    throw err
+                    // res.status(401).send(err);
                 }else {
                         console.log(res, res.response, res.messageId);
                     }
@@ -55,10 +53,7 @@ function invitationMail(user){
         }
     })
     
-
-    
-    
 }
 // })
 
-module.exports = invitationMail;
+module.exports = remainderMail;

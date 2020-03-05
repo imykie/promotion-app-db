@@ -4,7 +4,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 
-function invitationMail(user){
+function notifcationMail(user){
 
     let response;
     const filePath =  "../public/ejs/notifications.ejs";
@@ -61,4 +61,4 @@ function invitationMail(user){
 }
 // })
 
-module.exports = invitationMail;
+module.exports = notifcationMail;
