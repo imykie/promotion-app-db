@@ -10,15 +10,15 @@ var accessorSchema = new Schema({
     phone:{type: Number},
     status: {
         type: String,
-        enum: ['invitation sent', 'invitation received','paper sent','paper received']
-    },
-    approved: {
-        type: Boolean,
-        default: false
+        enum: ['invitation sent', 'invitation accepted','publication sent','publication received', 'publication returned']
     },
     date: {
         type: Date, default: Date.now
     }
+    // approved: {
+    //     type: Boolean,
+    //     default: false
+    // },
 })
 
 var candidateSchema = new Schema({

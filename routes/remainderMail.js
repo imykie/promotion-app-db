@@ -8,7 +8,9 @@ function remainderMail(user, message){
 
     const filePath =  "../public/ejs/notifications.ejs";
     const lecturerName = user.surname +' '+user.other;
-    const mailTitle = `Notification on ${lecturerName} of ${user.fac}, department of ${user.dep}`;
+    // const mailTitle = `Notification on ${lecturerName} of ${user.fac}, department of ${user.dep}`;
+    const mailTitle = `Testing`;
+
 
     const senderMail = 'michaelolatunji2020@gmail.com';
 
@@ -35,7 +37,7 @@ function remainderMail(user, message){
             // user.accessor.map((item) => { return console.log(item.accessorname) })
             let mailOptions = {
                 from: `Promotion Tracker <${senderMail}>`,
-                to: ['tundexmike@gmail.com', 'tupskey@gmail.com'],
+                to: ['tundexmike@gmail.com'],
                 subject: mailTitle,
                 html: data
             }

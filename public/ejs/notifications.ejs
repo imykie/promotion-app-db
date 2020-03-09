@@ -38,3 +38,207 @@
         </div>
       </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Your Result</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.3.0/snap.svg-min.js"></script>
+
+        <style>
+            body{
+                font-family: 'Montserrat', sans-serif;
+            }
+
+            @media screen and (min-width: 992px) and (max-width: 1325px){
+
+            }
+            @media screen and (min-width: 768px) and (max-width: 991px){
+                
+            }
+            @media screen and (max-width: 767px){
+                
+            }
+            @media screen and (max-width: 540px){
+                
+            }
+            .header{
+                background: linear-gradient(to right, #1DA9CD, #4F5CA4)
+            }
+            .content{
+                background-color: #182B56;
+            }
+            .lighter-text{
+                color: #9aa;
+            }
+            .progress {
+                width: 150px;
+                height: 150px;
+                background: none;
+                position: relative;
+                }
+
+                .progress::after {
+                content: "";
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                border: 16px solid #374568;
+                position: absolute;
+                top: 0;
+                left: 0;
+                }
+
+                .progress>span {
+                width: 50%;
+                height: 100%;
+                overflow: hidden;
+                position: absolute;
+                top: 0;
+                z-index: 1;
+                }
+
+                .progress .progress-left {
+                left: 0;
+                }
+
+                .progress .progress-bar {
+                width: 100%;
+                height: 100%;
+                background: none;
+                border-width: 16px;
+                border-style: solid;
+                position: absolute;
+                top: 0;
+                }
+
+                .progress .progress-left .progress-bar {
+                left: 100%;
+                border-top-right-radius: 80px;
+                border-bottom-right-radius: 80px;
+                border-left: 0;
+                -webkit-transform-origin: center left;
+                transform-origin: center left;
+                }
+
+                .progress .progress-right {
+                right: 0;
+                }
+                .progress .progress-right .progress-bar {
+                    left: -100%;
+                    border-top-left-radius: 80px;
+                    border-bottom-left-radius: 80px;
+                    border-right: 0;
+                    -webkit-transform-origin: center right;
+                    transform-origin: center right;
+                }
+
+        </style>
+    </head>
+    <body>
+        <div class="">
+            <div class="header">
+                <h6 class="py-3 text-uppercase text-center text-white mb-0 mx-3">Your depression screening test results</h6>
+            </div>
+            <div class="content text-white text-center">
+                <h6 class="pt-5 mb-1 text-uppercase lighter-text">your score is</h6>
+                <h5 class="font-weight-bolder">Moderately Severe Depression</h5>
+                <div class="progress mx-auto mt-4" data-value='19'>
+                    <span class="progress-left">
+                        <span class="progress-bar border-primary"></span>
+                    </span>
+                    <span class="progress-right">
+                        <span class="progress-bar border-primary"></span>
+                    </span>
+                    <div class="progress-value w-100 h-100  rounded align-items-center item">
+                      <div class="h2 font-weight-bold mt-4 pt-3">19</div>
+                      <p class="lighter-text text-uppercase">out of 27</p>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row justify-content-center mt-3">
+                        <div class="">
+                            <p class="">Minimal Depression</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="">0 - 4</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center my-0 py-0">
+                        <div class="">
+                            <p class="">Mind Depression</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="">5 - 9</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center my-0 py-0">
+                        <div class="">
+                            <p class="">Moderate Depression</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="">10 - 14</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center my-0 py-0">
+                        <div class="">
+                            <p class="">Moderate Severe Depression</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="">15 - 19</p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center my-0 py-0">
+                        <div class="">
+                            <p class="">Severe Depression</p>
+                        </div>
+                        <div class="ml-3">
+                            <p class="">20 - 27</p>
+                        </div>
+                    </div>
+                </div>
+                <hr class="bg-white mx-4 mx-md-5"/>
+                <p class="px-3 pb-4">
+                    Your results indicate that you may be experiencing symtomps of Moderately severe depression. Based on your answers,
+                    living with these symptoms is causing difficulty managing relationships and even the tasks of everyday life.
+                </p>
+            </div>
+        </div>
+        <script>
+            $(function() {
+
+                $(".progress").each(function() {
+
+                var value = $(this).attr('data-value');
+                var left = $(this).find('.progress-left .progress-bar');
+                var right = $(this).find('.progress-right .progress-bar');
+
+                if (value > 0) {
+                    if (value <= 13.5) {
+                    right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                    } else {
+                    right.css('transform', 'rotate(180deg)')
+                    left.css('transform', 'rotate(' + percentageToDegrees(value - 13.5) + 'deg)')
+                    }
+                }
+
+                })
+
+                function percentageToDegrees(percentage) {
+
+                return percentage / 27 * 360
+                }
+                });
+        </script>
+    </body>
+</html> -->

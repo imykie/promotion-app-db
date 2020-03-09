@@ -3,7 +3,7 @@ const Candidate = require('../models/candidate');
 const moment = require('moment');
 const remainderMail = require('./remainderMail');
 const reminderSchedule = () => {
-    let reminder = cron.schedule('* * * * *', () => {
+    let reminder = cron.schedule('* * * * * *', () => {
         
         //fetches the data with invitation sent
         Candidate.aggregate([
@@ -39,10 +39,10 @@ const reminderSchedule = () => {
                     const prevDate = moment(new Date(item.date));
                     const diff = currentDate.diff(prevDate, 'minutes'); //must be changed to days
                     console.log(diff);
-                    if(diff >= 40){
-                        message = `${item.name} of ${item.surname} ${item.other} is yet to respond to invitation after ${diff} minutes`;
+                    if(diff >= 5){
+                        message = `${item.name} of ${item.surname} ${item.other} is yet to respond to invitation after 5 minutes`;
                         console.log(message);
-                        remainderMail(item, message);
+                        // remainderMail(item, message);
                     }
                 });
                 // const diffDuration = moment.duration(diff)

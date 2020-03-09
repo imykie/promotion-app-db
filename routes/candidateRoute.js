@@ -1,14 +1,13 @@
 const express = require('express');
 const Candidate = require('../models/candidate');
-// const Accessor = require('../models/accessor');
 const Notification = require('../models/notification');
 const route = express.Router();
-// const sendMail = require('./invitationMail');
 const jwt = require('jsonwebtoken');
 const jwtPrivateKey = "promotion tracking";
 const jwtExpirySeconds = 600;
 const Pusher = require('pusher');
 const notificationMail = require('./notificationMail');
+const Faculty = require('../models/faculty');
 
 const pusher = new Pusher({
     appId: '935842',
@@ -18,6 +17,21 @@ const pusher = new Pusher({
     encrypted: true
   });
 
+
+route.post('/add-departments', (req, res, next) => {
+    Faculty.create(req.body, (err, data) => {
+        if(err){
+            res.status(400).end();
+            console.log(err)
+            return next(error)
+        }else{
+            res.status(200);
+            console.log(data);
+            return res.json(data);
+        }
+        
+    })
+});
 route.get('/candidates-list', (req, res, next)=> {
     Candidate.aggregate([
         {$sort: {"date": -1}}
@@ -72,7 +86,7 @@ route.post('/add-candidate', (req, res, next)=> {
 
             //add candidate notification
             const message = `${surname} ${other} of ${dep} account created with ${accessor.length} of 3 accessors`
-            notificationMail({data:data, message: message});
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err){
                     res.status(400).end();
@@ -160,7 +174,7 @@ route.put('/update/:id', (req,res,next)=> {
             //update notification
             const { surname, other, dep } = data;
             const message = `${surname} ${other}, ${dep} details updated!`
-            notificationMail({data:data, message: message});
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err) return next(err);
                 else{
@@ -190,7 +204,7 @@ route.delete('/delete-candidate/:id', (req,res, next)=> {
             //delete candidate notification
             const { surname, other } = data;
             const message = `${surname} ${other} has been deleted`
-            notificationMail({data:data, message: message});
+            // notificationMail({data:data, message: message});
             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                 if (err) return next(err);
                 else{
@@ -205,9 +219,9 @@ route.delete('/delete-candidate/:id', (req,res, next)=> {
     })
 });
 
-// verify invite and updates status to invitation received
+// verify invite and updates status to invitation accepted
 route.put("/verify-invite/:id", (req, res, next) => {
-    const newStatus = "invitation received"
+    const newStatus = "invitation accepted"
     invitationSent(req, res).then((result) => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
@@ -226,7 +240,7 @@ route.put("/verify-invite/:id", (req, res, next) => {
                     const { surname, other, dep, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
                     const message = `${accessorName} of ${surname} ${other}, ${dep} has responded. Invitation accepted`;
-                    notificationMail({data:data, message: message});
+                    // notificationMail({data:data, message: message});
                     Notification.create({ownerId: data._id, message: message}, (err, data) => {
                         if (err) return next(err);
                         else{
@@ -273,7 +287,7 @@ route.put("/verify-invite/:id", (req, res, next) => {
 
 route.put("/send-papers/:id", (req, res, next) => {
     const type = "verification";
-    const newStatus = "paper sent";
+    const newStatus = "publication sent";
     invitationAccepted(req, res).then(result => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id": req.params.id, "accessor._id": req.query.accessorId}, 
@@ -283,7 +297,7 @@ route.put("/send-papers/:id", (req, res, next) => {
             }},{new:true},
             (err, data) => {
                 if(err) {
-                    console.log(err, "sending papers failed");
+                    console.log(err, "publication sending failed");
                     next(err);
                     res.status(400).end();
                 }else{
@@ -291,15 +305,15 @@ route.put("/send-papers/:id", (req, res, next) => {
                     //send papers notifications
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
-                    const message = `Papers has been sent to ${accessorName} of ${surname} ${other}`;
+                    const message = `Publications has been sent to ${accessorName} of ${surname} ${other}`;
 
-                    notificationMail({data:data, message: message});
+                    // notificationMail({data:data, message: message});
                     Notification.create({ownerId: data._id, message: message}, (err, data) => {
                         if (err){
                             res.status(400).end();
                             return next(err);
                         }else{
-                            pusher.trigger('notifications', 'paper-sent', {
+                            pusher.trigger('notifications', 'publication-sent', {
                                 message: message,
                                 date: data.date
                             });
@@ -307,7 +321,7 @@ route.put("/send-papers/:id", (req, res, next) => {
                     });
                     res.status(200);
                     res.json({data: data, status: result.status, message:message});
-                    console.log(req.query.accessorId +" paper has been sent");
+                    console.log(req.query.accessorId +" publication has been sent");
                 }
             })
         }else{
@@ -321,7 +335,7 @@ route.put("/send-papers/:id", (req, res, next) => {
 })
 
 route.put("/verify-papers/:id", (req, res ,next) => {
-    const newStatus = "paper received"
+    const newStatus = "publication received"
     paperSent(req, res).then(result => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
@@ -332,29 +346,79 @@ route.put("/verify-papers/:id", (req, res ,next) => {
                 }
             },{new:true}, (err, data) => {
                 if(err) {
-                    console.log(err, " paper reception failed");
+                    console.log(err, " publication reception failed");
                     next(err);
                     res.status(400).end();
                 }else{
         
-                    //paper received notification
+                    //publication received notification
                     const { surname, other, accessor } = data;
                     const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
-                    const message = `Papers has been received by ${accessorName} of ${surname} ${other}`;
-                    notificationMail({data:data, message: message});
+                    const message = `Publications has been received by ${accessorName} of ${surname} ${other}`;
+                    // notificationMail({data:data, message: message});
                             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                                 if (err){
                                     res.status(400).end();
                                     return next(err);
                                 }else{
-                                    pusher.trigger('notifications', 'verify-papers', {
+                                    pusher.trigger('notifications', 'verify-publication', {
                                         message: message,
                                         date: data.date
                                     });
                                 }
                             });
                     res.json({data:data, status: result.status, message:message});
-                    console.log(data.accessor +" paper accepted");
+                    console.log(data.accessor +" publication received");
+                    res.status(200).end();
+                }
+            });
+        }else{
+            console.log(result.status, result.message);
+            res.json({message: result.message, status: result.status})
+            res.status(401).end();
+        }
+    }).catch(err => {
+        throw err;
+    })
+    
+});
+
+//publication returned...
+route.put("/return-publication/:id", (req, res ,next) => {
+    const newStatus = "publication returned"
+    paperReceived(req, res).then(result => {
+        if(result.status){
+            Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
+                $set: {
+                    "accessor.$.status": newStatus,
+                    "accessor.$.date":  new Date().toISOString()
+
+                }
+            },{new:true}, (err, data) => {
+                if(err) {
+                    console.log(err, " publication reception failed");
+                    next(err);
+                    res.status(400).end();
+                }else{
+        
+                    //publication returned notification
+                    const { surname, other, accessor } = data;
+                    const accessorName = accessor.find(x => x._id == req.query.accessorId).accessorname;
+                    const message = `Publications has been returned by ${accessorName} of ${surname} ${other}`;
+                    // notificationMail({data:data, message: message});
+                            Notification.create({ownerId: data._id, message: message}, (err, data) => {
+                                if (err){
+                                    res.status(400).end();
+                                    return next(err);
+                                }else{
+                                    pusher.trigger('notifications', 'publication-returned', {
+                                        message: message,
+                                        date: data.date
+                                    });
+                                }
+                            });
+                    res.json({data:data, status: result.status, message:message});
+                    console.log(data.accessor +" publication received");
                     res.status(200).end();
                 }
             });
@@ -370,8 +434,7 @@ route.put("/verify-papers/:id", (req, res ,next) => {
 });
 
 //final function if paper approved or declined!
-
-route.put("/final-status/:id", (req, res) => {
+route.put("/final-status/:id", (req, res, next) => {
     paperReceived(req, res).then((result) => {
         if(result.status){
             Candidate.findOneAndUpdate({"_id":req.params.id, "accessor._id": req.query.accessorId}, {
@@ -392,7 +455,7 @@ route.put("/final-status/:id", (req, res) => {
                     const status = accessor.find(x => x._id == req.query.accessorId).approved;
                     let finalStatus = (status)? "approved":"disproved";
                     const message = `${surname} ${other} papers has been ${finalStatus} by ${accessorName}`;
-                    notificationMail({data:data, message: message});
+                    // notificationMail({data:data, message: message});
 
                             Notification.create({ownerId: data._id, message: message}, (err, data) => {
                                 if (err){
@@ -418,6 +481,63 @@ route.put("/final-status/:id", (req, res) => {
         throw err;
     })
 })
+
+
+//departments api starts here
+route.get('/departments', (req, res, next) => {
+    Faculty.find({}, (err, data) => {
+        if(err){
+            res.status(400).end();
+            return next(err)
+        }else{
+            res.status(200);
+            return res.json(data);
+        }
+    })
+});
+
+route.put('/add-department/:id', (req, res, next) => {
+    Faculty.update(
+        {_id: req.params.id}, 
+        {$push: 
+            {departments: 
+                { $each: [
+                    { name: req.body.department }
+                ]}}},
+        {new:true},
+        (err, data) => {
+        if(err){
+            res.status(400).end();
+            console.log(err)
+            return next(err)
+        }else{
+            res.status(200);
+            console.log(data);
+            return res.json(data);
+        }
+    })
+});
+
+route.put('/delete-department/:id', (req, res, next) => {
+    Faculty.update(
+        {_id: req.params.id}, 
+        {$pull: 
+            {departments: 
+                    {_id: req.query.dep_id}
+                }},
+                {new: true},
+        // { new: true},
+        (err, data) => {
+        if (err){
+            res.status(400).end();
+            return next(err);
+        }else{
+            res.status(200);
+            return res.json(data)
+        }
+    })
+})
+
 
 //a promise that checks if invitation has been sent by the accessor
 const invitationSent = (req, res) => {
@@ -465,15 +585,15 @@ const invitationAccepted = (req, res) => {
                 }else{
                     // res.json(data);
                     console.log(data);
-                    if(data.accessor[0].status == "invitation received"){
-                        message = "Invitation has been received";
+                    if(data.accessor[0].status == "invitation accepted"){
+                        message = "Invitation has been accepted";
                         console.log(message);
                         status = true;
                     }else if(data.accessor[0].status == "invitation sent"){
-                        message = "Accessors needs to receive invitation before you can proceed";
+                        message = "Assessor needs to receive invitation before you can proceed";
                         console.log(message);
                         status = false;
-                    }else if(data.accessor[0].status == "paper sent"){
+                    }else if(data.accessor[0].status == "publication sent"){
                         message = "paper has already been sent to this accessor";
                         console.log(message);
                         status = false;
@@ -491,7 +611,7 @@ const invitationAccepted = (req, res) => {
 
 const paperSent = (req, res) => {
     return new Promise((resolve, reject) => {
-        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "paper sent"},
+        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "publicationaper sent"},
             (err, data) => {
                 let status = new Boolean(false);
                 let message = new String();
@@ -502,21 +622,21 @@ const paperSent = (req, res) => {
                 }else{
                     // res.json(data);
                     console.log(data);
-                    if(data.accessor[0].status == "paper sent"){
-                        message = "Paper has been sent, you may proceed";
+                    if(data.accessor[0].status == "publication sent"){
+                        message = "Publications has been sent, you may proceed";
                         console.log(message);
                         status = true;
                     }else if(data.accessor[0].status == "invitation sent"){
-                        message = "Accessor needs to receive invitation then send papers before you can proceed";
+                        message = "Assessor needs to receive invitation then send papers before you can proceed";
                         console.log(message);
                         status = false;
-                    }else if(data.accessor[0].status == "invitation received"){
+                    }else if(data.accessor[0].status == "invitation accepted"){
                         message = "You need to send papers before you can proceed";
                         console.log(message);
                         status = false;
                         
-                    }else if(data.accessor[0].status == "paper received"){
-                        message = "Papers has already been received for this accessor";
+                    }else if(data.accessor[0].status == "publication received"){
+                        message = "Publications has already been received for this assessor";
                         console.log(message);
                         status = false;
                     }else{
@@ -533,7 +653,7 @@ const paperSent = (req, res) => {
 
 const paperReceived = (req, res) => {
     return new Promise((resolve, reject) => {
-        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "paper received"},
+        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "publication received"},
             (err, data) => {
                 let status = new Boolean(false);
                 let message = new String();
@@ -544,12 +664,12 @@ const paperReceived = (req, res) => {
                 }else{
                     // res.json(data);
                     console.log(data)
-                    if(data.accessor[0].status == "paper received"){
-                        message = "Paper has been received";
+                    if(data.accessor[0].status == "publication received"){
+                        message = "Publication has been received";
                         console.log(message);
                         status = true;
-                    }else if(data.accessor[0].status == "paper sent"){
-                        message = "Papers needs to be received and examined before you can proceed";
+                    }else if(data.accessor[0].status == "publication sent"){
+                        message = "Publications needs to be received and examined before you can proceed";
                         console.log(message);
                         status = false;
                     }else{

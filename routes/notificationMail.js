@@ -46,7 +46,8 @@ function notifcationMail(user){
             transporter.sendMail(mailOptions, function(err, res) {
                 if (err) {
                     console.log(err);
-                    res.status(401).send(err);
+                    throw err;
+                    // res.status(401).send(err);
                 }else {
                         console.log(res, res.response, res.messageId);
                     }
