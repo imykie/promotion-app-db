@@ -37,10 +37,10 @@ const reminderSchedule = () => {
                 data.map(item => {
                     const prevDate = moment(new Date(item.date));
                     const diff = currentDate.diff(prevDate, 'minutes'); //must be changed to days
-                    console.log(diff);
+                    // console.log(diff);
                     if(diff >= 5){
                         message = `${item.name} of ${item.surname} ${item.other} is yet to return papers after 5 minutes`;
-                        console.log(message);
+                        // console.log(message);
                         // remainderMail(item, message);
                     }
                 });

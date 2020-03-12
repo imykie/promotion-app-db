@@ -484,6 +484,18 @@ route.put("/final-status/:id", (req, res, next) => {
 
 
 //departments api starts here
+
+route.post('/faculties', (req, res, next) => {
+    Faculty.create(req.body, {new: true} ,(err, data) => {
+        if(err){
+            res.status(400).end();
+            return next(err);
+        }else{
+            res.status(200);
+            return res.json(data);
+        }
+    })
+})
 route.get('/departments', (req, res, next) => {
     Faculty.find({}, (err, data) => {
         if(err){
@@ -509,16 +521,19 @@ route.put('/add-department/:id', (req, res, next) => {
         if(err){
             res.status(400).end();
             console.log(err)
+            data.success = false
             return next(err)
         }else{
             res.status(200);
             console.log(data);
+            data.success = true;
             return res.json(data);
         }
     })
 });
 
-route.put('/delete-department/:id', (req, res, next) => {
+route.put('/remove-department/:id', (req, res, next) => {
+    console.log(req.params.id, req.query.dep_id)
     Faculty.update(
         {_id: req.params.id}, 
         {$pull: 
@@ -530,9 +545,11 @@ route.put('/delete-department/:id', (req, res, next) => {
         (err, data) => {
         if (err){
             res.status(400).end();
+            data.success = false;
             return next(err);
         }else{
             res.status(200);
+            data.success = true;
             return res.json(data)
         }
     })
@@ -574,7 +591,7 @@ const invitationSent = (req, res) => {
 
 const invitationAccepted = (req, res) => {
     return new Promise((resolve, reject) => {
-        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "invitation sent"},
+        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "invitation accepted"},
             (err, data) => {
                 let status = new Boolean(false);
                 let message = new String();
@@ -611,7 +628,7 @@ const invitationAccepted = (req, res) => {
 
 const paperSent = (req, res) => {
     return new Promise((resolve, reject) => {
-        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "publicationaper sent"},
+        Candidate.findOne({_id: req.params.id, "accessor._id": req.query.accessorId},{"accessor.$.status": "publication sent"},
             (err, data) => {
                 let status = new Boolean(false);
                 let message = new String();
