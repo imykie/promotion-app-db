@@ -19,7 +19,6 @@ const authenticate = require('./authenticate')
 const config = require('./config');
 
 
-// 'mongodb+srv://mikeking:mikeking@cluster0-u8mop.mongodb.net/test?retryWrites=true&w=majority'
 const url = config.mongoUrl;
 mongoose.connect(url, {useNewUrlParser: true})
 .then(() => {
@@ -52,14 +51,14 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '/public/index.html'));
-// })
-
 app.use('/users', usersRouter);
 app.use('/api', candidateRouter);
 invitationReminder();
 papersReminder();
+
+app.route('/*').get((req, res) => {
+  res.sendFile(path.resolve((__dirname + '/public/index.html')));
+})
 // app.use('/mail', mailRouter);
 
 // catch 404 and forward to error handler
